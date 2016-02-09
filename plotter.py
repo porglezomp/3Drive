@@ -54,53 +54,22 @@ def drawDot():
   time.sleep(0.5)
 
 
-def moveLeft(steps):
-  for _ in range(steps):
-      moveX(1,0,1,0)
-      time.sleep(delay)
-      moveX(1,0,0,1)
-      time.sleep(delay)
-      moveX(0,1,0,1)
-      time.sleep(delay)
-      moveX(0,1,1,0)
-      time.sleep(delay)
+NEGATIVE_PATTERN = [(1, 0, 1, 0), (1, 0, 0, 1), (0, 1, 0, 1), (0, 1, 1, 0)]
+POSITIVE_PATTERN = [(0, 1, 1, 0), (0, 1, 0, 1), (1, 0, 0, 1), (1, 0, 1, 0)]
 
 
-def moveYUp(steps):
-  for _ in range(steps):
-    moveY(0,1,1,0)
-    time.sleep(delay)
-    moveY(0,1,0,1)
-    time.sleep(delay)
-    moveY(1,0,0,1)
-    time.sleep(delay)
-    moveY(1,0,1,0)
-    time.sleep(delay)
+def movePattern(mover,  pattern):
+  def motion(steps):
+    for _ in range(steps):
+      for w1, w2, w3, w4 in pattern:
+        mover(w1, w2, w3, w4)
+        time.sleep(delay)
+  return motion
 
-
-def moveYDown(steps):
-  for _ in range(steps):
-    moveY(1,0,1,0)
-    time.sleep(delay)
-    moveY(1,0,0,1)
-    time.sleep(delay)
-    moveY(0,1,0,1)
-    time.sleep(delay)
-    moveY(0,1,1,0)
-    time.sleep(delay)
-
-
-def moveRight(steps):
-  for _ in range(steps):
-    moveX(0,1,1,0)
-    time.sleep(delay)
-    moveX(0,1,0,1)
-    time.sleep(delay)
-    moveX(1,0,0,1)
-    time.sleep(delay)
-    moveX(1,0,1,0)
-    time.sleep(delay)
-
+moveLeft = movePattern(moveX, NEGATIVE_PATTERN)
+moveYDown = movePattern(moveY, NEGATIVE_PATTERN)
+moveRight = movePattern(moveX, POSITIVE_PATTERN)
+moveYUp = movePattern(moveY, POSITIVE_PATTERN)
 
 for x in range(width):
   for y in range(height):
