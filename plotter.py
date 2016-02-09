@@ -24,35 +24,16 @@ for pin in itertools.chain(xPins, yPins, zPins):
   GPIO.output(pin, False)
 
 
-def moveX(w1, w2, w3, w4):
-  GPIO.output(xPins[0], w1)
-  GPIO.output(xPins[1], w2)
-  GPIO.output(xPins[2], w3)
-  GPIO.output(xPins[3], w4)
+def moveAxis(pins):
+  def move(*inputs):
+    assert len(inputs) == len(pins)
+    for i, pin in enumerate(pins):
+      GPIO.output(pin, inputs[i])
+  return move
 
-
-def moveY(w1, w2, w3, w4):
-  GPIO.output(yPins[0], w1)
-  GPIO.output(yPins[1], w2)
-  GPIO.output(yPins[2], w3)
-  GPIO.output(yPins[3], w4)
-
-
-def moveZ(w1, w2):
-  GPIO.output(zPins[0], w1)
-  GPIO.output(zPins[1], w2)
-
-
-def drawDot():
-  moveZ(0, 0)
-  time.sleep(0.2)
-  moveZ(0, 1)
-  time.sleep(0.34)
-  moveZ(0, 0)
-  time.sleep(0.2)
-  moveZ(1, 0)
-  time.sleep(0.5)
-
+moveX = moveAxis(xPins)
+moveY = moveAxis(yPins)
+moveZ = moveAxis(zPins)
 
 NEGATIVE_PATTERN = [(1, 0, 1, 0), (1, 0, 0, 1), (0, 1, 0, 1), (0, 1, 1, 0)]
 POSITIVE_PATTERN = [(0, 1, 1, 0), (0, 1, 0, 1), (1, 0, 0, 1), (1, 0, 1, 0)]
@@ -70,6 +51,18 @@ moveLeft = movePattern(moveX, NEGATIVE_PATTERN)
 moveYDown = movePattern(moveY, NEGATIVE_PATTERN)
 moveRight = movePattern(moveX, POSITIVE_PATTERN)
 moveYUp = movePattern(moveY, POSITIVE_PATTERN)
+
+
+def drawDot():
+  moveZ(0, 0)
+  time.sleep(0.2)
+  moveZ(0, 1)
+  time.sleep(0.34)
+  moveZ(0, 0)
+  time.sleep(0.2)
+  moveZ(1, 0)
+  time.sleep(0.5)
+
 
 for x in range(width):
   for y in range(height):
