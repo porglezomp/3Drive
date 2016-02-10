@@ -5,23 +5,11 @@ import cv2
 import sys
 import itertools
 
-img = cv2.imread(sys.argv[1])
-
-height, width = img.shape[0], img.shape[1]
-
-delay = 0.005
+DELAY = 0.005
 
 xPins = [18, 23, 24, 25]
 yPins = [22, 27, 17, 4]
 zPins = [8, 7]
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
-# Set all of the GPIO pins to output mode
-for pin in itertools.chain(xPins, yPins, zPins):
-  GPIO.setup(pin, GPIO.OUT)  
-  GPIO.output(pin, False)
 
 
 def moveX(w1, w2, w3, w4):
@@ -61,13 +49,14 @@ def moveLeft(steps):
   for _ in range(steps):
     for w1, w2, w3, w4 in NEGATIVE_PATTERN:
       moveX(w1, w2, w3, w4)
-      time.sleep(delay)
+      time.sleep(DELAY)
+
 
 def moveYDown(steps):
   for _ in range(steps):
     for w1, w2, w3, w4 in NEGATIVE_PATTERN:
       moveY(w1, w2, w3, w4)
-      time.sleep(delay)
+      time.sleep(DELAY)
 
 
 POSITIVE_PATTERN = [(1,0,1,0), (1,0,0,1), (0,1,0,1), (0,1,1,0)]
@@ -77,31 +66,44 @@ def moveRight(steps):
   for _ in range(steps):
     for w1, w2, w3, w4 in POSITIVE_PATTERN:
       moveX(w1, w2, w3, w4)
-      time.sleep(delay)
+      time.sleep(DELAY)
 
 
 def moveYUp(steps):
   for _ in range(steps):
     for w1, w2, w3, w4 in POSITIVE_PATTERN:
       moveY(w1, w2, w3, w4)
-      time.sleep(delay)
+      time.sleep(DELAY)
 
 
-for x in range(width):
-  for y in range(height):
-    print "Row: {}\nCol: {}".format(x, y)
-    percentDone = (x * y) / (width * height)
-    print "Percent complete: {}%".format(percentDone)
-    red = img[y, x, 2]
-    green = img[y, x, 1]
-    blue = img[y, x, 0]
+if __name__ == '__main__':
+  img = cv2.imread(sys.argv[1])
 
-    if red != 255 and green != 255 and blue != 255:
-      drawDot()
-    moveRight(1)
+  height, width = img.shape[0], img.shape[1]
 
-  #Go back to the start of the row
-  moveLeft(height)
-  moveYUp(1)
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setwarnings(False)
 
-moveYDown(width)
+  # Set all of the GPIO pins to output mode
+  for pin in itertools.chain(xPins, yPins, zPins):
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, False)
+
+  for x in range(width):
+    for y in range(height):
+      print "Row: {}\nCol: {}".format(x, y)
+      percentDone = (x * y) / (width * height)
+      print "Percent complete: {}%".format(percentDone)
+      red = img[y, x, 2]
+      green = img[y, x, 1]
+      blue = img[y, x, 0]
+
+      if red != 255 and green != 255 and blue != 255:
+        drawDot()
+      moveRight(1)
+
+    #Go back to the start of the row
+    moveLeft(height)
+    moveYUp(1)
+
+  moveYDown(width)
