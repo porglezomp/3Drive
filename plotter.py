@@ -11,6 +11,15 @@ xPins = [18, 23, 24, 25]
 yPins = [22, 27, 17, 4]
 zPins = [8, 7]
 
+def setupGPIO():
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setwarnings(False)
+
+  # Set all of the GPIO pins to output mode
+  for pin in itertools.chain(xPins, yPins, zPins):
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, False)
+
 
 def moveX(w1, w2, w3, w4):
   GPIO.output(xPins[0], w1)
@@ -81,13 +90,7 @@ if __name__ == '__main__':
 
   height, width = img.shape[0], img.shape[1]
 
-  GPIO.setmode(GPIO.BCM)
-  GPIO.setwarnings(False)
-
-  # Set all of the GPIO pins to output mode
-  for pin in itertools.chain(xPins, yPins, zPins):
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, False)
+  setupGPIO()
 
   for x in range(width):
     for y in range(height):
