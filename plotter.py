@@ -13,6 +13,13 @@ zPins = [8, 7]
 
 
 def moveX(w1, w2, w3, w4):
+  """
+  Set the pin outputs for the Y axis motor.
+
+  w1--w4 are pin values, to rotate the motor they need to be carefully
+  cycled. Unless you really know what you're doing, use moveLeft and
+  moveRight.
+  """
   GPIO.output(xPins[0], w1)
   GPIO.output(xPins[1], w2)
   GPIO.output(xPins[2], w3)
@@ -20,6 +27,13 @@ def moveX(w1, w2, w3, w4):
 
 
 def moveY(w1, w2, w3, w4):
+  """
+  Set the pin outputs for the Y axis motor.
+
+  w1--w4 are pin values, to rotate the motor they need to be carefully
+  cycled. Unless you really know what you're doing, use moveYUp and
+  moveYDown.
+  """
   GPIO.output(yPins[0], w1)
   GPIO.output(yPins[1], w2)
   GPIO.output(yPins[2], w3)
@@ -27,11 +41,19 @@ def moveY(w1, w2, w3, w4):
 
 
 def moveZ(w1, w2):
+  """
+  Set the pin outputs for the Z axis motor.
+
+  w1 and w2 are motor control pin values. In order to rotate the motor,
+  they need to be carefully cycled. Unless you really know what you're
+  doing, use drawDot to draw dots on the paper.
+  """
   GPIO.output(zPins[0], w1)
   GPIO.output(zPins[1], w2)
 
 
 def drawDot():
+  """Move the pen down and then up to leave a dot on the paper."""
   moveZ(0, 0)
   time.sleep(0.2)
   moveZ(0, 1)
@@ -42,10 +64,12 @@ def drawDot():
   time.sleep(0.5)
 
 
+# This is the magnet cycle pattern to turn a motor backwards
 NEGATIVE_PATTERN = [(1,0,1,0), (1,0,0,1), (0,1,0,1), (0,1,1,0)]
 
 
 def moveLeft(steps):
+  """Rotate the X axis motor to move the pen head to the left."""
   for _ in range(steps):
     for w1, w2, w3, w4 in NEGATIVE_PATTERN:
       moveX(w1, w2, w3, w4)
@@ -53,16 +77,19 @@ def moveLeft(steps):
 
 
 def moveYDown(steps):
+  """Rotate the Y axis motor to move the pen head backwards."""
   for _ in range(steps):
     for w1, w2, w3, w4 in NEGATIVE_PATTERN:
       moveY(w1, w2, w3, w4)
       time.sleep(DELAY)
 
 
+# This is the magnet cycle pattern to turn a motor forwards
 POSITIVE_PATTERN = [(1,0,1,0), (1,0,0,1), (0,1,0,1), (0,1,1,0)]
 
 
 def moveRight(steps):
+  """Rotate the X axis motor to move the pen head to the right."""
   for _ in range(steps):
     for w1, w2, w3, w4 in POSITIVE_PATTERN:
       moveX(w1, w2, w3, w4)
@@ -70,6 +97,7 @@ def moveRight(steps):
 
 
 def moveYUp(steps):
+  """Rotate the Y axis motor to move the pen head forwards."""
   for _ in range(steps):
     for w1, w2, w3, w4 in POSITIVE_PATTERN:
       moveY(w1, w2, w3, w4)
